@@ -1,4 +1,3 @@
-﻿local Library = {}
 local PlayerGui = game:GetService("PlayerGui")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -442,5 +441,3 @@ function Library:NewWindow(title)
 	
 	return windowObject
 end
-
-return Library
