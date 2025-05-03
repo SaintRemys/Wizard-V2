@@ -9,7 +9,7 @@ local oldCore
 
 
 if RunService:IsStudio() then
-	oldPlr = Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("WizardLibrary")
+	oldPlr = game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("WizardLibrary")
 	oldCore = false
 else
 	oldPlr = false
