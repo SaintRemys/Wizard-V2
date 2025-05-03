@@ -4,6 +4,7 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 local RunService = game:GetService("RunService")
+local SectionStr = "Section"
 local oldPlr
 local oldCore
 
@@ -711,6 +712,11 @@ function Library:NewWindow(title)
 		print("Body Size Y: "..ListLayout.AbsoluteContentSize.Y)
 		Body.Size = UDim2.new(0, 170, 0, ListLayout.AbsoluteContentSize.Y + 5)
 	end)
+	for _, child in ipairs(Body:GetChildren()) do
+		if not string.find(child.Name, SectionStr) then
+			Body.Size = UDim2.new(0, 170, 0, 35)
+		end
+	end
 	return windowObject
 end
 return Library
