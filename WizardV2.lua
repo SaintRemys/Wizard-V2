@@ -241,6 +241,12 @@ function Library:NewWindow(title)
 		SectionInfo.Parent = Section
 		SectionInfo.Name = "SectionInfo"
 		SectionInfo.BorderSizePixel = 0
+		
+		local SectionTopFill = Instance.new("Frame")
+		SectionTopFill.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+		SectionTopFill.LayoutOrder = 0
+		SectionTopFill.Parent = Section
+		SectionTopFill.Size = UDim2.new(0, 170, 0, 7)
 
 		local SectionToggle = Instance.new("TextButton")
 		SectionToggle.Name = "SectionToggle"
@@ -261,14 +267,29 @@ function Library:NewWindow(title)
 			task.wait()
 			sectionFullHeight = Layout.AbsoluteContentSize.Y + 5
 		end)
-
 		SectionToggle.MouseButton1Click:Connect(function()
 			expanded = not expanded
 
 			local targetText = expanded and "-" or "v"
 			local newTextSize = expanded and 20 or 14
 			local baseHeight = SectionInfo.Size.Y.Offset
-			local contentHeight = Layout.AbsoluteContentSize.Y - baseHeight + 5
+
+			if expanded then
+				for _, frame in ipairs(Section:GetChildren()) do
+					if frame:IsA("Frame") and frame.Name ~= "SectionInfo" then
+						frame.Visible = true
+						for _, desc in ipairs(frame:GetChildren()) do
+							if desc:IsA("Frame") then
+								desc.Visible = true
+							end
+						end
+					end
+				end
+			end
+
+			task.wait()
+
+			local contentHeight = Layout.AbsoluteContentSize.Y - baseHeight
 			local newSectionSize = expanded
 				and UDim2.new(0, 170, 0, baseHeight + contentHeight)
 				or UDim2.new(0, 170, 0, baseHeight)
@@ -288,28 +309,27 @@ function Library:NewWindow(title)
 
 			resizeSection:Play()
 
+			if not expanded then
+				task.delay(0.17, function()
+					for _, frame in ipairs(Section:GetChildren()) do
+						if frame:IsA("Frame") and frame.Name ~= "SectionInfo" then
+							frame.Visible = false
+							for _, desc in ipairs(frame:GetChildren()) do
+								if desc:IsA("Frame") then
+									desc.Visible = false
+								end
+							end
+						end
+					end
+				end)
+			end
+
 			resizeSection.Completed:Connect(function()
 				local newBodyHeight = ListLayout.AbsoluteContentSize.Y + 5
 				local resizeBody = TweenService:Create(Body, tweenInfo, {Size = UDim2.new(0, 170, 0, newBodyHeight)})
 				resizeBody:Play()
 			end)
-			wait(0.17)
-			for _, frame in ipairs(Section:GetChildren()) do
-				if frame:IsA("Frame") and frame.Name ~= "SectionInfo" then
-					frame.Visible = expanded
-					for _, desc in ipairs(frame:GetChildren()) do
-						if desc:IsA("Frame") then
-							desc.Visible = expanded
-						end
-					end
-				end
-			end
 		end)
-
-
-
-
-
 
 		local SectionTitle = Instance.new("TextLabel")
 		SectionTitle.Name = "SectionTitle"
