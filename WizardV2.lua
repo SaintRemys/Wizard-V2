@@ -1,19 +1,37 @@
-﻿local Library = {}
+local Library = {}
 local PlayerGui = game:GetService("PlayerGui")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 local RunService = game:GetService("RunService")
+local oldPlr
+local oldCore
 
-local old = game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("WizardLibrary")
-if old then
-	old:Destroy()
+
+if RunService:IsStudio() then
+	oldPlr = Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("WizardLibrary")
+	oldCore = false
+else
+	oldPlr = false
+	oldCore = CoreGui:FindFirstChild("WizardLibrary")
 end
+
+if oldPlr then
+	oldPlr:Destroy()
+elseif oldCore then
+	oldCore:Destroy()
+end
+
 wait(0.5)
 
 local WizardLibrary = Instance.new("ScreenGui")
 WizardLibrary.Name = "WizardLibrary"
-WizardLibrary.Parent = game.Players.LocalPlayer.PlayerGui
+
+if RunService:IsStudio() then
+	WizardLibrary.Parent = game.Players.LocalPlayer.PlayerGui
+else
+	WizardLibrary.Parent = CoreGui
+end
 
 local Container = Instance.new("Frame")
 Container.Name = "Container"
@@ -546,7 +564,7 @@ function Library:NewWindow(title)
 			ToggleBackground.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
 			ToggleBackground.Parent = ToggleHolder
 			ToggleBackground.BorderSizePixel = 0
-			ToggleBackground.Position = UDim2.new(0.76, 0, 0.167, 0)
+			ToggleBackground.Position = UDim2.new(0.76, 0, 0.25, 0)
 			ToggleBackground.Name = "ToggleBackground"
 			
 			local ToggleCorner = Instance.new("UICorner")
