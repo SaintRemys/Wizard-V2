@@ -74,6 +74,31 @@ function Library:MakeDraggable(frame)
 	end)
 end
 
+function EnterLeaveButton(button, corner, cornerRad, transparency)
+	if corner then
+		local UICorner = Instance.new("UICorner")
+		UICorner.Parent = button
+		UICorner.CornerRadius = UDim.new(0, cornerRad)
+	end
+	if button:IsA("ImageLabel") or button:IsA("ImageButton") then
+		local startTrans = button.ImageTransparency
+		button.MouseEnter:Connect(function()
+			button.ImageTransparency = transparency
+		end)
+		button.MouseLeave:Connect(function()
+			button.ImageTransparency = startTrans
+		end)
+	else
+		local startTrans = button.BackgroundTransparency
+		button.MouseEnter:Connect(function()
+			button.BackgroundTransparency = transparency
+		end)
+		button.MouseLeave:Connect(function()
+			button.BackgroundTransparency = startTrans
+		end)
+	end
+end
+
 function Library:NewWindow(title)
 	local Window = Instance.new("ImageLabel")
 	Window.Name = title.."Window"
@@ -123,7 +148,7 @@ function Library:NewWindow(title)
 	WindowToggle.Name = "WindowToggle"
 	WindowToggle.Parent = Topbar
 	WindowToggle.BackgroundTransparency = 1
-	WindowToggle.Position = UDim2.new(0.822, 0, 0, 0)
+	WindowToggle.Position = UDim2.new(0.74, 0, 0, 0)
 	WindowToggle.Size = UDim2.new(0, 30, 0, 30)
 	WindowToggle.ZIndex = 2
 	WindowToggle.TextSize = 20
@@ -131,6 +156,25 @@ function Library:NewWindow(title)
 	WindowToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
 	WindowToggle.Text = "-"
 	local collapsed = false
+
+	
+	local WindowClose = Instance.new("TextButton")
+	WindowClose.Name = "WindowClose"
+	WindowClose.Parent = Topbar
+	WindowClose.Font = Enum.Font.SourceSansSemibold
+	WindowClose.Text = "x"
+	WindowClose.TextSize = 16
+	WindowClose.ZIndex = 2
+	WindowClose.BackgroundTransparency = 1
+	WindowClose.TextColor3 = Color3.fromRGB(255, 255, 255)
+	WindowClose.BackgroundColor3 = Color3.fromRGB(255, 255 ,255)
+	WindowClose.Size = UDim2.new(0, 30, 0, 30)
+	WindowClose.Position = UDim2.new(0.825, 0, 0, 0)
+	WindowClose.MouseButton1Click:Connect(function()
+		Window:Destroy()
+	end)
+	
+	
 
 	local WindowTitle = Instance.new("TextLabel")
 	WindowTitle.Text = title
@@ -335,6 +379,7 @@ function Library:NewWindow(title)
 			Button.TextColor3 = Color3.fromRGB(255, 255, 255)
 			Button.Parent = ButtonHolder
 			Button.ZIndex= 2
+		
 			
 			Button.MouseButton1Click:Connect(function()
 				if callback then
@@ -355,6 +400,7 @@ function Library:NewWindow(title)
 			ButtonRound.Parent = Button
 			ButtonRound.Size = UDim2.new(1, 0, 1, 0)
 			ButtonRound.AnchorPoint = Vector2.new(0.5, 0.5)
+			EnterLeaveButton(ButtonRound, false, 0, 0.2)
 		end
 		
 		function sectionObject:CreateTextbox(text, callback)
@@ -396,6 +442,7 @@ function Library:NewWindow(title)
 			TextboxRound.Parent = TextBox
 			TextboxRound.Size = UDim2.new(1, 0, 1, 0)
 			TextboxRound.AnchorPoint = Vector2.new(0.5, 0.5)
+			EnterLeaveButton(TextboxRound, false, 0, 0.1)
 
 			TextBox.FocusLost:Connect(function(enterPressed)
 				if enterPressed then
@@ -549,6 +596,7 @@ function Library:NewWindow(title)
 			ToggleButton.ImageColor3 = Color3.fromRGB(147, 147, 147)
 			ToggleButton.Image = "http://www.roblox.com/asset/?id=3570695787"
 			ToggleButton.Name = "ToggleButton"
+			EnterLeaveButton(ToggleBackground, false, 0, 0.2)
 			ToggleButton.MouseButton1Click:Connect(function()
 				local tweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
@@ -567,6 +615,27 @@ function Library:NewWindow(title)
 
 				if callback then callback(toggled) end
 			end)
+			ToggleBackground.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					local tweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+					toggled = not toggled
+					if toggled then
+						local posTween = TweenService:Create(ToggleButton, tweenInfo, {Position = UDim2.new(0, 17, 0, 2)})
+						local colorTween = TweenService:Create(ToggleButton, tweenInfo, {ImageColor3 = Color3.fromRGB(255, 255, 255)})
+						posTween:Play()
+						colorTween:Play()
+					else
+						local posTween = TweenService:Create(ToggleButton, tweenInfo, {Position = UDim2.new(0, 2, 0, 2)})
+						local colorTween = TweenService:Create(ToggleButton, tweenInfo, {ImageColor3 = Color3.fromRGB(147, 147, 147)})
+						posTween:Play()
+						colorTween:Play()
+					end
+
+					if callback then callback(toggled) end
+				end
+			end)
+
 		end
 
 		function sectionObject:CreateSlider(text, min, max, default, decimals, callback)
@@ -624,8 +693,9 @@ function Library:NewWindow(title)
 			SliderValueHolder.ScaleType = Enum.ScaleType.Slice
 			SliderValueHolder.SliceCenter = Rect.new(100, 100, 100, 100)
 			SliderValueHolder.SliceScale = 0.02
+			EnterLeaveButton(SliderValueHolder, false, 0, 0.7)
 
-			local SliderValue = Instance.new("TextLabel")
+			local SliderValue = Instance.new("TextBox")
 			SliderValue.Parent = SliderValueHolder
 			SliderValue.Font = Enum.Font.SourceSansBold
 			SliderValue.BackgroundTransparency = 1
@@ -634,6 +704,16 @@ function Library:NewWindow(title)
 			SliderValue.TextColor3 = Color3.fromRGB(255, 255, 255)
 			SliderValue.TextScaled = true
 			SliderValue.Text = default
+
+			task.spawn(function()
+				while true do
+					if not SliderValue:IsFocused() and tonumber(SliderValue.Text) == nil then
+						SliderValue.Text = default
+					end
+					task.wait(0.1)
+				end
+			end)
+			
 
 			local function roundValue(val)
 				return decimals and tonumber(string.format("%.2f", val)) or math.round(val)
@@ -669,6 +749,25 @@ function Library:NewWindow(title)
 					end)
 				end
 			end)
+			SliderValue.FocusLost:Connect(function(enterPressed)
+				local typed = tonumber(SliderValue.Text)
+				if typed then
+					local clamped = math.clamp(typed, min, max)
+					local relative = (clamped - min) / (max - min)
+					local displayValue = roundValue(clamped)
+
+					local tween = TweenService:Create(Slider, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+						Size = UDim2.new(relative, 0, 1.15, 0)
+					})
+					tween:Play()
+
+					SliderValue.Text = tostring(displayValue)
+					if callback then callback(displayValue) end
+				else
+					SliderValue.Text = default
+				end
+			end)
+
 		end
 		return sectionObject
 	end
