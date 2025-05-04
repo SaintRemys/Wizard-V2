@@ -4,16 +4,22 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 local RunService = game:GetService("RunService")
+local Gui = game.Players.LocalPlayer.PlayerGui
 local SectionStr = "Section"
+local WindowStr = "Window"
 local oldPlr
 local oldCore
+local studio
+local client
 
 
 if RunService:IsStudio() then
 	oldPlr = game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("WizardLibrary")
 	oldCore = false
+	studio = true
 else
 	oldPlr = false
+	client = true
 	oldCore = CoreGui:FindFirstChild("WizardLibrary")
 end
 
@@ -70,20 +76,33 @@ end
 
 function Library:NewWindow(title)
 	local Window = Instance.new("ImageLabel")
-	Window.Name = (title.."Window")
-	Window.Parent = Container
+	Window.Name = title.."Window"
 	Window.ScaleType = Enum.ScaleType.Slice
 	Window.Image = "http://www.roblox.com/asset/?id=3570695787"
 	Window.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 	Window.ImageColor3 = Color3.fromRGB(25, 25, 25)
-	Window.Position = UDim2.new(2, -100, 3, -265)
 	Window.Size = UDim2.new(0, 170, 0, 30)
 	Window.ZIndex = 2
 	Window.SliceScale = 0.05
 	Window.SliceCenter = Rect.new(100, 100, 100, 100)
 	Window.BorderSizePixel = 0
 	Window.BackgroundTransparency = 1
+	local childNum = 0
+	local offsetX = -100
+	
+	Container.ChildAdded:Connect(function(child)
+		childNum = childNum + 1
+		if #Container:GetChildren() == 1 then
+			child.Position = UDim2.new(2, -100, 3, -265)
+		else
+			offsetX = offsetX + 200
+			child.Position = UDim2.new(2, offsetX, 3, -265)
+		end
+	end)
+	Window.Parent = Container
+	
 	self:MakeDraggable(Window)
+
 
 	local Topbar = Instance.new("Frame")
 	Topbar.Parent = Window
@@ -259,78 +278,7 @@ function Library:NewWindow(title)
 		SectionToggle.TextSize = 14
 		SectionToggle.Text = "v"
 		SectionToggle.Font = Enum.Font.SourceSansSemibold
-		local expanded = true
-
-		local sectionFullHeight = 0
-
-		Section.ChildAdded:Connect(function()
-			task.wait()
-			sectionFullHeight = Layout.AbsoluteContentSize.Y + 5
-		end)
-		SectionToggle.MouseButton1Click:Connect(function()
-			expanded = not expanded
-
-			local targetText = expanded and "-" or "v"
-			local newTextSize = expanded and 20 or 14
-			local baseHeight = SectionInfo.Size.Y.Offset
-
-			if expanded then
-				for _, frame in ipairs(Section:GetChildren()) do
-					if frame:IsA("Frame") and frame.Name ~= "SectionInfo" then
-						frame.Visible = true
-						for _, desc in ipairs(frame:GetChildren()) do
-							if desc:IsA("Frame") then
-								desc.Visible = true
-							end
-						end
-					end
-				end
-			end
-
-			task.wait()
-
-			local contentHeight = Layout.AbsoluteContentSize.Y - baseHeight
-			local newSectionSize = expanded
-				and UDim2.new(0, 170, 0, baseHeight + contentHeight)
-				or UDim2.new(0, 170, 0, baseHeight)
-
-			local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
-
-			local fadeOut = TweenService:Create(SectionToggle, tweenInfo, {TextTransparency = 1})
-			local fadeIn = TweenService:Create(SectionToggle, tweenInfo, {TextTransparency = 0})
-			local resizeSection = TweenService:Create(Section, tweenInfo, {Size = newSectionSize})
-
-			fadeOut:Play()
-			fadeOut.Completed:Connect(function()
-				SectionToggle.Text = targetText
-				SectionToggle.TextSize = newTextSize
-				fadeIn:Play()
-			end)
-
-			resizeSection:Play()
-
-			if not expanded then
-				task.delay(0.17, function()
-					for _, frame in ipairs(Section:GetChildren()) do
-						if frame:IsA("Frame") and frame.Name ~= "SectionInfo" then
-							frame.Visible = false
-							for _, desc in ipairs(frame:GetChildren()) do
-								if desc:IsA("Frame") then
-									desc.Visible = false
-								end
-							end
-						end
-					end
-				end)
-			end
-
-			resizeSection.Completed:Connect(function()
-				local newBodyHeight = ListLayout.AbsoluteContentSize.Y + 5
-				local resizeBody = TweenService:Create(Body, tweenInfo, {Size = UDim2.new(0, 170, 0, newBodyHeight)})
-				resizeBody:Play()
-			end)
-		end)
-
+		
 		local SectionTitle = Instance.new("TextLabel")
 		SectionTitle.Name = "SectionTitle"
 		SectionTitle.Text = name
@@ -575,7 +523,7 @@ function Library:NewWindow(title)
 			ToggleTitle.Position = UDim2.new(0.053, 0, 0, 0)
 			ToggleTitle.Size = UDim2.new(0, 125, 0, 30)
 			ToggleTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-			ToggleTitle.TextSize = 17
+			ToggleTitle.TextSize = 16
 			ToggleTitle.TextXAlignment = Enum.TextXAlignment.Left
 			ToggleTitle.Parent = ToggleHolder
 			ToggleTitle.Name = "ToggleTitle"
@@ -637,7 +585,7 @@ function Library:NewWindow(title)
 			SliderTitle.Position = UDim2.new(0.053, 0, 0, 0)
 			SliderTitle.BackgroundTransparency = 1
 			SliderTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-			SliderTitle.TextSize = 17
+			SliderTitle.TextSize = 16
 			SliderTitle.TextXAlignment = Enum.TextXAlignment.Left
 
 			local SliderBackground = Instance.new("ImageLabel")
@@ -722,10 +670,6 @@ function Library:NewWindow(title)
 				end
 			end)
 		end
-		
-		Section.ChildAdded:Connect(function()
-			print("Section Size Y: "..Layout.AbsoluteContentSize.Y)
-		end)
 		return sectionObject
 	end
 	Body.ChildAdded:Connect(function()
