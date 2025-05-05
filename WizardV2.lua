@@ -128,7 +128,6 @@ function Library:NewWindow(title)
 	
 	self:MakeDraggable(Window)
 
-
 	local Topbar = Instance.new("Frame")
 	Topbar.Parent = Window
 	Topbar.Name = "Topbar"
@@ -148,7 +147,7 @@ function Library:NewWindow(title)
 	WindowToggle.Name = "WindowToggle"
 	WindowToggle.Parent = Topbar
 	WindowToggle.BackgroundTransparency = 1
-	WindowToggle.Position = UDim2.new(0.74, 0, 0, 0)
+	WindowToggle.Position = UDim2.new(0.72, 0, 0, 0)
 	WindowToggle.Size = UDim2.new(0, 30, 0, 30)
 	WindowToggle.ZIndex = 2
 	WindowToggle.TextSize = 20
@@ -170,9 +169,6 @@ function Library:NewWindow(title)
 	WindowClose.BackgroundColor3 = Color3.fromRGB(255, 255 ,255)
 	WindowClose.Size = UDim2.new(0, 30, 0, 30)
 	WindowClose.Position = UDim2.new(0.825, 0, 0, 0)
-	WindowClose.MouseButton1Click:Connect(function()
-		Window:Destroy()
-	end)
 	
 	
 
@@ -267,6 +263,19 @@ function Library:NewWindow(title)
 		end)
 
 		sizeTween:Play()
+	end)
+	WindowClose.MouseButton1Click:Connect(function()
+		local X = Body.Size.X.Offset
+		local Y = Body.Size.Y.Offset
+		local x = Window.Size.X.Offset
+		local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+		local sizeTween = TweenService:Create(Body, tweenInfo, {Size = UDim2.new(0, X, 0, 0) })
+		sizeTween:Play()
+		sizeTween.Completed:Wait()
+		local sizeTween = TweenService:Create(Window, tweenInfo, {Size = UDim2.new(0, x, 0, 0) })
+		Window.ClipsDescendants = true
+		sizeTween:Play()
+		sizeTween.Completed:Wait()
 	end)
 
 
