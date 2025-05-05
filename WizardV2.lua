@@ -1,4 +1,4 @@
-local Library = {}
+ local Library = {}
 local PlayerGui = game:GetService("PlayerGui")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -674,7 +674,7 @@ function Library:NewWindow(title)
 			SliderTitle.Text = text
 			SliderTitle.Font = Enum.Font.SourceSansBold
 			SliderTitle.Size = UDim2.new(0, 125, 0, 15)
-			SliderTitle.Position = UDim2.new(0.053, 0, 0, 0)
+			SliderTitle.Position = UDim2.new(0.053, 0,0.1, 0)
 			SliderTitle.BackgroundTransparency = 1
 			SliderTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 			SliderTitle.TextSize = 16
