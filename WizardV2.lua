@@ -107,7 +107,6 @@ function Library:NewWindow(title)
 	Window.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 	Window.ImageColor3 = Color3.fromRGB(25, 25, 25)
 	Window.Size = UDim2.new(0, 170, 0, 30)
-	Window.TextXAlignment = Enum.TextXAlignment.Left
 	Window.ZIndex = 2
 	Window.SliceScale = 0.05
 	Window.SliceCenter = Rect.new(100, 100, 100, 100)
