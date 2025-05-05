@@ -4,5 +4,5 @@ Documentation:
 https://sites.google.com/view/wizard-v2/home
 
 Credits:                                                                   
-Wizard - original, Wizard
+Wizard - original, Wizard                                 
 Saint.remy - new, Wizard V2
