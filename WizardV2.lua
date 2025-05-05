@@ -276,6 +276,7 @@ function Library:NewWindow(title)
 		Window.ClipsDescendants = true
 		sizeTween:Play()
 		sizeTween.Completed:Wait()
+		Window:Destroy()
 	end)
 
 
@@ -283,6 +284,17 @@ function Library:NewWindow(title)
 	local windowObject = {}
 
 	function windowObject:Exit()
+		local X = Body.Size.X.Offset
+		local Y = Body.Size.Y.Offset
+		local x = Window.Size.X.Offset
+		local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+		local sizeTween = TweenService:Create(Body, tweenInfo, {Size = UDim2.new(0, X, 0, 0) })
+		sizeTween:Play()
+		sizeTween.Completed:Wait()
+		local sizeTween = TweenService:Create(Window, tweenInfo, {Size = UDim2.new(0, x, 0, 0) })
+		Window.ClipsDescendants = true
+		sizeTween:Play()
+		sizeTween.Completed:Wait()
 		Window:Destroy()
 	end
 
