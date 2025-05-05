@@ -2,3 +2,7 @@ this project is a recreation of the roblox UI library Wizard, since the code was
 
 Documentation:                                    
 https://sites.google.com/view/wizard-v2/home
+
+Credits:
+Wizard - original, Wizard
+Saint.remt - new, Wizard V2
