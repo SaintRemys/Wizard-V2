@@ -184,6 +184,7 @@ function Library:NewWindow(title)
 	WindowTitle.ZIndex = 2
 	WindowTitle.Font = Enum.Font.SourceSansBold
 	WindowTitle.BackgroundTransparency = 1
+	WindowTitle.TextXAlignment = Enum.TextXAlignment.Left
 
 	local Body = Instance.new("ImageLabel")
 	Body.Name = "Body"
