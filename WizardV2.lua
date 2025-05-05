@@ -1,4 +1,4 @@
- local Library = {}
+local Library = {}
 local PlayerGui = game:GetService("PlayerGui")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -107,6 +107,7 @@ function Library:NewWindow(title)
 	Window.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 	Window.ImageColor3 = Color3.fromRGB(25, 25, 25)
 	Window.Size = UDim2.new(0, 170, 0, 30)
+	Window.TextXAlignment = Enum.TextXAlignment.Left
 	Window.ZIndex = 2
 	Window.SliceScale = 0.05
 	Window.SliceCenter = Rect.new(100, 100, 100, 100)
@@ -179,7 +180,7 @@ function Library:NewWindow(title)
 	WindowTitle.TextColor3 = Color3.new(255, 255, 255)
 	WindowTitle.TextSize = 17
 	WindowTitle.Size = UDim2.new(0, 170, 0, 30)
-	WindowTitle.Position = UDim2.new(0, 0, 0, 0)
+	WindowTitle.Position = UDim2.new(0.053, 0, 0, 0)
 	WindowTitle.ZIndex = 2
 	WindowTitle.Font = Enum.Font.SourceSansBold
 	WindowTitle.BackgroundTransparency = 1
